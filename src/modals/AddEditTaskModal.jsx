@@ -117,7 +117,7 @@ const AddEditTaskModal=({type,device,setOpenAddEditTaskModal,prevColIndex=0,task
                     <label className="text-sm dark:text-white text-gray-500">
                         Current Status
                     </label>
-                    <select value={status}onChange={(e)=>onChangeStatus(e)} className="select-status  dark:text-white  dark:bg-transparent flex flex-grow px-4 py-2 rounded-md text-sm bg-transparent focus:border-0 border border-gray-300 focus:outline-[#635fc7] outline-none">
+                    <select value={status} onChange={(e)=>onChangeStatus(e)} className="select-status  dark:text-white  dark:bg-transparent flex flex-grow px-4 py-2 rounded-md text-sm bg-transparent focus:border-0 border border-gray-300 focus:outline-[#635fc7] outline-none">
                         {
                             column.map((col,index)=>(
                                 <option value={col.name} key={index} className="bg-transparent dark:text-white dark:bg-gray-500">{col.name}</option>

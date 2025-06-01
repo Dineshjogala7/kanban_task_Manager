@@ -66,7 +66,7 @@ const boardSlice=createSlice({
             const board=state.find((board)=>board.isActive);
             const col=board.columns.find((cols,ind)=>ind===payload.colIndex);
             const task=col.tasks.find((task,ind)=>ind===payload.taskIndex);
-            const subtask=task.find((subtask,id)=>id===payload.index);
+            const subtask=task.subtasks.find((subtask,id)=>id===payload.index);
             subtask.isCompleted=!subtask.isCompleted;
         },
         setTaskStatus:(state,action)=>{
