@@ -41,18 +41,21 @@ const boardSlice=createSlice({
             column.tasks.push(task);
         },
         editTask:(state,action)=>{
-            const {title,status,description,subtasks,prevColIndex,newColIndex,taskindex}=action.payload;
-            const board=state.find((board)=>board.isActive);
-            const column=board.columns.find((cols,index)=>index===prevColIndex);
-            const task=column.find((task,index)=>index===taskindex);
-            task.title=title;
-            task.description=description;
-            task.subtasks=subtasks;
-            if(prevColIndex===newColIndex) return;
-            column.tasks=column.tasks.filter((task,index)=>index!==taskindex);
-            const newCol=board.columns.find((col,index)=>index===newColIndex);
-            newCol.tasks.push(task);
-        },
+    const {title,status,description,subtasks,prevColIndex,newColIndex,taskIndex}=action.payload;
+    const board=state.find((board)=>board.isActive);
+    const column=board.columns.find((cols,index)=>index===prevColIndex);
+    const task=column.tasks.find((task,index)=>index===taskIndex);
+    
+    task.title=title;
+    task.description=description;
+    task.subtasks=subtasks;
+    task.status=status; // Add this line to update status
+    
+    if(prevColIndex===newColIndex) return;
+    column.tasks=column.tasks.filter((task,index)=>index!==taskIndex);
+    const newCol=board.columns.find((col,index)=>index===newColIndex);
+    newCol.tasks.push(task);
+},
         dragTask:(state,action)=>{
             const {colIndex,prevColIndex,taskIndex}=action.payload;
             const board=state.find((board)=>board.isActive);
@@ -69,18 +72,26 @@ const boardSlice=createSlice({
             const subtask=task.subtasks.find((subtask,id)=>id===payload.index);
             subtask.isCompleted=!subtask.isCompleted;
         },
-        setTaskStatus:(state,action)=>{
-            const payload=action.payload;
-            const board=state.find((board)=>board.isActive);
-            const columns=board.columns;
-            const col=columns.find((col,index)=>index===payload.colIndex);
-            if(payload.colIndex===payload.newColIndex) return;
-            const task=col.tasks.find((task,index)=>index===payload.taskIndex);
-            task.status=payload.status;
-            col.tasks=col.filter((tasks,i)=>i!==payload.taskIndex);
-            const newCol=columns.find((col,i)=>i===payload.taskIndex);
-            newCol.tasks.push(task);
-        },
+        setTaskStatus: (state, action) => {
+    const payload = action.payload;
+    const board = state.find((board) => board.isActive);
+    const columns = board.columns;
+    const col = columns.find((col, index) => index === payload.colIndex);
+    const task = col.tasks.find((task, index) => index === payload.taskIndex);
+    
+    // Update task status
+    task.status = payload.status;
+    
+    // If moving to a different column
+    if (payload.colIndex !== payload.newColIndex) {
+        // Remove task from old column
+        col.tasks = col.tasks.filter((tasks, i) => i !== payload.taskIndex);
+        
+        // Find new column and add task
+        const newCol = columns.find((col, i) => i === payload.newColIndex);
+        newCol.tasks.push(task);
+    }
+},
         deleteTask:(state,action)=>{
             const payload=action.payload;
             const board=state.find((board)=>board.isActive);
