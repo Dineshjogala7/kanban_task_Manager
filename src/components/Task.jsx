@@ -16,10 +16,16 @@ const Task=({taskIndex,colIndex})=>{
             completed++;
         }
     });
-
+    const handleOnDrag = (e) => {
+    e.dataTransfer.setData(
+      "text",
+      JSON.stringify({ taskIndex, prevColIndex: colIndex })
+    );
+  };
     return(
         <div>
-            <div onClick={()=>{setisTaskModalOpen(true)}} className="  items-center w-[280px] first:my-5 bg-white dark:bg-[#2b2c37] shadow-[#364e7e1a] py-6 shadow-lg hover:text-[#635fc7] dark:text-white dark:hover:text-[#635fc7] cursor-pointer rounded-lg px-4">
+            <div  draggable
+        onDragStart={handleOnDrag} onClick={()=>{setisTaskModalOpen(true)}} className="  items-center w-[280px] first:my-5 bg-white dark:bg-[#2b2c37] shadow-[#364e7e1a] py-6 shadow-lg hover:text-[#635fc7] dark:text-white dark:hover:text-[#635fc7] cursor-pointer rounded-lg px-4">
                 <p className="font-bold tracking-wide ">
                     {task.title}
                 </p>
