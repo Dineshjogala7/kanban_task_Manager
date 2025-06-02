@@ -70,8 +70,8 @@ const AddEditTaskModal = ({ type, device, setOpenAddEditTaskModal, setisTaskModa
         });
     };
 
-    const onSubmit = (type) => {
-        if (type === 'add') {
+    const onSubmit = (submitType) => {
+        if (submitType === 'add') {
             dispatch(boardSlice.actions.addTask({
                 title, description, subtasks, status, newColIndex
             }));
@@ -80,19 +80,26 @@ const AddEditTaskModal = ({ type, device, setOpenAddEditTaskModal, setisTaskModa
                 title, description, subtasks, status, taskIndex, prevColIndex, newColIndex
             }));
         }
+        
+        // Close the edit modal
         setOpenAddEditTaskModal(false);
+        
+        // Close the parent TaskModal as well
+        if (setisTaskModalOpen) {
+            setisTaskModalOpen(false);
+        }
+    };
 
+    const handleClose = () => {
+        setOpenAddEditTaskModal(false);
     };
 
     return (
         <div 
             onClick={(e) => {
-                if (e.target === e.currentTarget) setOpenAddEditTaskModal(false);
+                if (e.target === e.currentTarget) handleClose();
             }}
-            className={device === 'mobile' 
-                ? 'py-6 px-6 pb-40 absolute overflow-y-scroll left-0 flex right-0 bottom-[-100vh] top-0 bg-[#00000080]' 
-                : 'py-6 px-6 pb-40 absolute overflow-y-scroll left-0 flex right-0 bottom-[-100vh] top-0 bg-[#00000080]'
-            }
+            className="fixed right-0 left-0 bottom-0 top-0 px-2 py-4 overflow-scroll scrollbar-hide z-[60] justify-center items-center flex bg-[#00000080]"
         >
             {/* Modal Section */}
             <div className="scrollbar-hide overflow-y-scroll max-h-[95vh] my-auto bg-white dark:bg-[#2b2c37] text-black dark:text-white font-bold shadow-md shadow-[#364e7e1a] max-w-md mx-auto px-8 py-8 rounded-xl w-full">
@@ -182,11 +189,10 @@ const AddEditTaskModal = ({ type, device, setOpenAddEditTaskModal, setisTaskModa
                             const isValidForm = validate();
                             if (isValidForm === true) {
                                 onSubmit(type);
-                                setOpenAddEditTaskModal(false);
-                                console.log("Clicked the Edit or Task button in Task Edit Modal");
+                                console.log("Task saved successfully");
                             }
                         }} 
-                        className="w-full items-center text-white bg-[#635fc7] py-2 rounded-full"
+                        className="w-full items-center text-white bg-[#635fc7] py-2 rounded-full hover:opacity-75"
                     > 
                         {type === 'edit' ? 'Save Edit' : 'Create Task'}
                     </button>

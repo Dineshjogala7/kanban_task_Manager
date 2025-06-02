@@ -6,6 +6,7 @@ import Subtask from "../components/Subtask"
 import boardSlice from "../redux/boardSlice"
 import DeleteModal from "./DeleteModal"
 import AddEditTaskModal from "../modals/AddEditTaskModal"
+
 const TaskModal = ({ colIndex, taskIndex, setisTaskModalOpen }) => {
     const boards = useSelector((state) => state.boards)
     const board = boards.find((board) => board.isActive)
@@ -17,18 +18,21 @@ const TaskModal = ({ colIndex, taskIndex, setisTaskModalOpen }) => {
     
     let completed = 0;
     const [elipsisMenuOpen, setElipsisMenuOpen] = useState(false)
-    const [isDeleteModalOpen,setIsDeleteModalOpen]=useState(false)
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+    const [isAddTaskModalOpen, setIsAddTaskModalOpen] = useState(false)
+    
     subtasks.forEach((subtask) => {
         if (subtask.isCompleted) {
             completed++;
         }
     });
-    const onDeleteBtnClick=()=>{
-        dispatch(boardSlice.actions.deleteTask({taskIndex,colIndex}))
-        
+    
+    const onDeleteBtnClick = () => {
+        dispatch(boardSlice.actions.deleteTask({taskIndex, colIndex}))
         setIsDeleteModalOpen(false)
         setisTaskModalOpen(false)
     }
+    
     const setOpenEditModal = () => {
         setIsAddTaskModalOpen(true)
         setElipsisMenuOpen(false)
@@ -41,7 +45,6 @@ const TaskModal = ({ colIndex, taskIndex, setisTaskModalOpen }) => {
 
     const [status, setStatus] = useState(task.status)
     const [newColIndex, setNewColIndex] = useState(columns.indexOf(col))
-    const [isAddTaskModalOpen,setIsAddTaskModalOpen]=useState(false)
 
     const onChange = (e) => {
         setStatus(e.target.value)
@@ -49,23 +52,33 @@ const TaskModal = ({ colIndex, taskIndex, setisTaskModalOpen }) => {
     }
 
     const handleModalClose = () => {
-        // Only dispatch if the status has actually changed
-        if (status !== task.status) {
-            dispatch(boardSlice.actions.setTaskStatus({
-                taskIndex,
-                colIndex,
-                newColIndex,
-                status
-            }))
-        }
+        dispatch(boardSlice.actions.setTaskStatus({
+            taskIndex,
+            colIndex,
+            newColIndex,
+            status
+        }))
         setisTaskModalOpen(false)
     }
 
     const handleBackdropClick = (e) => {
-        // Only close if clicking on the backdrop (not on modal content)
         if (e.target === e.currentTarget) {
             handleModalClose()
         }
+    }
+
+    // Don't render TaskModal if edit modal is open
+    if (isAddTaskModalOpen) {
+        return (
+            <AddEditTaskModal  
+                type={'edit'} 
+                device={'mobile'} 
+                setOpenAddEditTaskModal={setIsAddTaskModalOpen}
+                prevColIndex={colIndex} 
+                taskIndex={taskIndex} 
+                setisTaskModalOpen={setisTaskModalOpen}
+            />
+        )
     }
 
     return (
@@ -130,9 +143,8 @@ const TaskModal = ({ colIndex, taskIndex, setisTaskModalOpen }) => {
                         ))}
                     </select>
                 </div>
-
-
             </div>
+            
             {isDeleteModalOpen && (
                 <DeleteModal 
                     onDeleteBtnClick={onDeleteBtnClick} 
@@ -141,9 +153,6 @@ const TaskModal = ({ colIndex, taskIndex, setisTaskModalOpen }) => {
                     setIsDeleteModalOpen={setIsDeleteModalOpen}
                 />
             )}
-            {
-                isAddTaskModalOpen && <AddEditTaskModal  type={'edit'} device={'mobile'} setOpenAddEditTaskModal={isAddTaskModalOpen} prevColIndex={colIndex} taskIndex={taskIndex} setisTaskModalOpen={setisTaskModalOpen}/>
-            }
         </div>
     )
 }
