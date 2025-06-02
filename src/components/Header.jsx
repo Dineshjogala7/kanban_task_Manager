@@ -3,7 +3,7 @@ import iconDown from '../assets/icon-chevron-down.svg'
 import iconUp from '../assets/icon-chevron-up.svg'
 import elips from '../assets/icon-vertical-ellipsis.svg'
 import HeaderDropdown from './HeaderDropdown'
-import ElipsMenu from './ELipsMenu'
+import ElipsMenu from './ElipsMenu'
 import { useState } from 'react'
 import AddEditBoardModal from '../modals/AddEditBoardModal'
 import { useSelector,useDispatch } from 'react-redux'
@@ -30,7 +30,7 @@ const Header=({boardModalOpen,setBoardModalOpen})=>{
     const onDeleteBtnClick=()=>{
         dispatch(boardSlice.actions.deleteBoard());
         dispatch(boardSlice.actions.setBoardActive({index:0}))
-        set(false)
+        setIsDeleteModalOpen(false)
     }
     return(
         <div className='p-4 fixed left-0 bg-white dark:bg-[#2b2c37] z-50 right-0'> 
